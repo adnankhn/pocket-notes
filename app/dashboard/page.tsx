@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import prisma from "../lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Edit, File, Trash } from "lucide-react";
+import { File, Trash,} from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 import { TrashDelete, SearchButton } from "../components/Submitbuttons";
@@ -111,29 +111,10 @@ export default async function DashboardPage() {
   return (
     
     <div className="grid items-start gap-y-8">
-      {/* temp div submit */}
-      <form action={SearchData}>
-      <div className="gap-y-2 flex flex-col">
-        
-            {/* Add a URL field */}
-            <Label>URL</Label>
-            <Input
-              type="text"
-              name="search"
-              placeholder="Search for your note"
-            />
-          </div>
-          <SearchButton />
-          </form>
-
-      {/* temp div submit */}
-
       <div className="flex items-center justify-between px-2">
         <div className="grid gap-1">
-          <h1 className="text-3xl md:text-4xl">Your Collection</h1>
-          <p className="text-lg text-muted-foreground">
-            Here you can see and save new URLs
-          </p>
+          <h1 className="font-bold text-xl md:text-3xl lg:text-4xl">Your Collection</h1>
+          <p className="text-sm md:text-lg text-muted-foreground">Here you can see your saved URLs</p>
         </div>
 
         {data?.Subscription?.status === "active" ? (
@@ -179,13 +160,20 @@ export default async function DashboardPage() {
               className="flex items-center justify-between p-4"
             >
               <div className="w-full relative">
+              <Link href={`/dashboard/new/${item.id}`}>
+
               {item.jsonData && item.jsonData.thumbnail && (
     <img src={item.jsonData.thumbnail} alt="Thumbnail" className="w-full rounded-t-lg aspect-video object-cover" />
   )}          
+              </Link>
+
               <div className="p-3">
-                <h2 className="font-semibold text-xl text-primary">
-                  {item.title}
-                </h2>
+                <Link href={`/dashboard/new/${item.id}`}>
+                  <h2 className="font-semibold text-xl text-primary">
+                    {item.title}
+                  </h2>
+                </Link>
+
                 <p>
                   {new Intl.DateTimeFormat("en-US", {
                     dateStyle: "full",
@@ -193,12 +181,7 @@ export default async function DashboardPage() {
                 </p>
               </div>
 
-              <div className="flex gap-x-4">
-                <Link href={`/dashboard/new/${item.id}`}>
-                  <Button variant="outline" size="icon">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                </Link>
+              <div className="flex justify-end gap-x-4">
                 <form action={deleteNote}>
                   <input type="hidden" name="noteId" value={item.id} />
                   <TrashDelete />

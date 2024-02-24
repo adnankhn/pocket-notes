@@ -245,10 +245,10 @@ export default async function DynamicRoute({
         </CardContent>
 
         <CardFooter className="flex justify-between">
-          <Button asChild variant="destructive">
-            <Link href="/dashboard">Cancel</Link>
+          <Button asChild variant="secondary">
+            <Link href="/dashboard">Back</Link>
           </Button>
-          <SubmitButton />
+          {/* <SubmitButton /> */}
         </CardFooter>
       </form>
     </Card>

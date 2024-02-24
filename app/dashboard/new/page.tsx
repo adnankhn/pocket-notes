@@ -82,7 +82,8 @@ export default async function NewNoteRoute() {
       },
     });
 
-    return redirect(`/dashboard/new/${newNote.id}`);
+    // return redirect(`/dashboard/new/${newNote.id}`);
+    return redirect("/dashboard/");
     
   }
 
