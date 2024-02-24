@@ -2,13 +2,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import prisma from "../lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { File, Trash,} from "lucide-react";
+import { File } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
-import { TrashDelete, SearchButton } from "../components/Submitbuttons";
+import { TrashDelete } from "../components/Submitbuttons";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
 async function getData(userId: string) {
   noStore();
   const data = await prisma.user.findUnique({
@@ -20,7 +20,7 @@ async function getData(userId: string) {
         select: {
           title: true,
           id: true,
-          description: true,
+          // description: true,
           jsonData:true,
           createdAt: true,
         },
@@ -40,52 +40,52 @@ async function getData(userId: string) {
   return data;
 }
 
-async function SearchData(formData: FormData) {
-  "use server";
+// async function SearchData(formData: FormData) {
+//   "use server";
 
   
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  console.log(user?.id);
+//   const { getUser } = getKindeServerSession();
+//   const user = await getUser();
+//   console.log(user?.id);
 
 
-  const searchQuery = formData.get("search") as string; 
-  console.log(searchQuery);
-  const data = await prisma.user.findUnique({
-    where: {
-      id: user?.id,
-    },
-    select: {
-      Notes: {
-        where: {
-          OR: [
-            { title: { contains: searchQuery, mode: 'insensitive' } }, 
-            { description: { contains: searchQuery, mode: 'insensitive' } }, 
+//   const searchQuery = formData.get("search") as string; 
+//   console.log(searchQuery);
+//   const data = await prisma.user.findUnique({
+//     where: {
+//       id: user?.id,
+//     },
+//     select: {
+//       Notes: {
+//         where: {
+//           OR: [
+//             { title: { contains: searchQuery, mode: 'insensitive' } }, 
+//             { description: { contains: searchQuery, mode: 'insensitive' } }, 
             
-          ],
-        },
-        select: {
-          title: true,
-          id: true,
-          description: true,
-          jsonData: true,
-          createdAt: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-      Subscription: {
-        select: {
-          status: true,
-        },
-      },
-    },
-  });
-  console.log(data);
+//           ],
+//         },
+//         select: {
+//           title: true,
+//           id: true,
+//           description: true,
+//           jsonData: true,
+//           createdAt: true,
+//         },
+//         orderBy: {
+//           createdAt: "desc",
+//         },
+//       },
+//       Subscription: {
+//         select: {
+//           status: true,
+//         },
+//       },
+//     },
+//   });
+//   console.log(data);
 
-  return data;
-}
+//   return data;
+// }
 
 
 export default async function DashboardPage() {
