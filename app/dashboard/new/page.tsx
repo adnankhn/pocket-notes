@@ -117,7 +117,7 @@ export default async function NewNoteRoute() {
         </CardFooter>
       </form>
 
-      {jsonData && (
+      {/* {jsonData && (
         <Card>
           <CardHeader>
             <CardTitle>Fetched Data</CardTitle>
@@ -128,7 +128,7 @@ export default async function NewNoteRoute() {
             <div dangerouslySetInnerHTML={{ __html: jsonData["content"] }} /> 
           </CardContent>
         </Card>
-      )}
+      )} */}
     </Card>
   );
 }
