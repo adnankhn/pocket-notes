@@ -4,13 +4,13 @@ import Stripe from "stripe";
 import prisma from "@/app/lib/db";
 
 import { NextApiRequest, NextApiResponse } from 'next';
-var { JSDOM } = require('jsdom'); // Adjust the path as per your project structure
+var { JSDOM } = require('jsdom'); 
 
 var { Readability } = require('@mozilla/readability');
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const url = req.query.url as string; // Get the URL from the query parameter
+  const url = req.query.url as string; 
 
   try {
     const response = await fetch(url);
@@ -23,14 +23,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let thumbnail = null;
 
-    // Check for lead image URL in article content
+    
     const contentDoc = new JSDOM(article.content).window.document;
     const leadImage = contentDoc.querySelector('img');
     if (leadImage) {
       thumbnail = leadImage.src;
     }
 
-    // Check metadata for thumbnail image URL
+    
     const metaTags = doc.window.document.querySelectorAll('meta[property="og:image"], meta[name="twitter:image"]');
     if (metaTags.length > 0) {
       thumbnail = metaTags[0].getAttribute('content');
