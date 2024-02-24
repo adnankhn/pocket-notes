@@ -122,9 +122,9 @@ export default async function NewNoteRoute() {
             <CardTitle>Fetched Data</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Title: {jsonData.title}</p>
-            <p>Byline: {jsonData.byline}</p>
-            <div dangerouslySetInnerHTML={{ __html: jsonData.content }} /> 
+            <p>Title: {jsonData["title"]}</p>
+            <p>Byline: {jsonData["byline"]}</p>
+            <div dangerouslySetInnerHTML={{ __html: jsonData["content"] }} /> 
           </CardContent>
         </Card>
       )}

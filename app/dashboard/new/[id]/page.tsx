@@ -38,7 +38,6 @@ const genAI = new GoogleGenerativeAI(process.env.API_KEY);
 async function run() {
   
   
-  console.log(text);
 }
 
 
