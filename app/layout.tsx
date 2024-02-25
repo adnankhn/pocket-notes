@@ -11,7 +11,20 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "FirePocket",
-  description: "A bookmarks app that also provides summaries.",
+  description: "A bookmark saving app that also provide summaries.",
+  openGraph: {
+    title: "FirePocket",
+    description: "A bookmark saving app that also provide summaries.",
+    url:"https://firepocket.vercel.app/",
+    siteName:"FirePocket",
+    images:[
+      {
+        url:"/page-thumbnail.png",
+        width:1260,
+        height:800,
+      }
+    ]
+  },
   icons: {
     icon: ['/favicon.ico?v=4'],
     apple: ['/apple-touch-icon.png'],
