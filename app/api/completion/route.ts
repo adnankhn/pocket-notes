@@ -12,8 +12,8 @@ export async function POST(request: Request) {
 
   // Ask Google Generative AI for a streaming completion given the prompt
   const response = await genAI
-    // .getGenerativeModel({ model: 'gemini-pro'})
-    .getGenerativeModel({ model: 'gemini-pro' , generationConfig: { maxOutputTokens: 200 }})
+    .getGenerativeModel({ model: 'gemini-pro'})
+    // .getGenerativeModel({ model: 'gemini-pro' , generationConfig: { maxOutputTokens: 200 }})
     .generateContentStream({
       contents: [{ role: 'user', parts: [{ text: "write a short summary of this article explaining the key takeaways and return the output in a well formated markdown format "+prompt }] }],
     });
