@@ -17,16 +17,20 @@ export default function SummaryComp({
 
   useEffect(() => {
     console.log("Component mounted. Content:", content);
-    if (content) {
+    if (description) {
+        setOpenAIResponse(description);
+    }
+    else if (content) {
       console.log("Calling generateSummary...");
-      generateSummary(content, url);
+      generateSummary(content, url, id);
     }
   }, []);
 
-  async function generateSummary(content: string, url: string) {
+  async function generateSummary(content: string, url: string, id: string) {
     console.log("generateSummary called. Content:", content);
     
-      await fetch("https://firepocket.vercel.app/api/completion", {
+    //   await fetch("http://localhost:3000/api/completion", {
+        await fetch("https://firepocket.vercel.app/api/completion", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,6 +38,7 @@ export default function SummaryComp({
         body: JSON.stringify({
           prompt: content,
           url: url,
+          id: id,
         })
       })
       .then(async (response: any) => {
