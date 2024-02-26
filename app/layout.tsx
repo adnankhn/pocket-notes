@@ -10,6 +10,7 @@ import { unstable_noStore as noStore } from "next/cache";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://firepocket.vercel.app/'),
   title: "FirePocket",
   description: "A bookmark saving app that also provide summaries.",
   openGraph: {
@@ -24,6 +25,11 @@ export const metadata: Metadata = {
         height:800,
       }
     ]
+  },
+  twitter: {
+    title: "FirePocket",
+    description: "A bookmark saving app that also provide summaries.",
+    images: ['https://firepocket.vercel.app/page-thumbnail.png'], 
   },
   icons: {
     icon: ['/favicon.ico?v=4'],
