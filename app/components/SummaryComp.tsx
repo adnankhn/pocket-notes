@@ -25,8 +25,8 @@ export default function SummaryComp({
 
   async function generateSummary(content: string, url: string) {
     console.log("generateSummary called. Content:", content);
-    try {
-      const response = await fetch("https://firepocket.vercel.app/api/completion", {
+    
+      await fetch("https://firepocket.vercel.app/api/completion", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,14 +34,21 @@ export default function SummaryComp({
         body: JSON.stringify({
           prompt: content,
           url: url,
-        }),
+        })
+      })
+      .then(async (response: any) => {
+        const reader = response.body?.getReader();
+        setOpenAIResponse("");
+        while (true) {
+          const { done, value } = await reader?.read();
+          if(done) {
+            break;
+          }
+          var currentChunk = new TextDecoder().decode(value);
+          setOpenAIResponse((prev) => prev + currentChunk);
+        }
       });
-      const responseData = await response.text();
-      setOpenAIResponse(responseData);
-    } catch (error) {
-      console.error("Error in generateSummary:", error);
     }
-  }
 
   return (
     <div>
