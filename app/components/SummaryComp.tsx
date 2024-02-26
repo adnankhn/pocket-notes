@@ -13,53 +13,62 @@ export default function SummaryComp({
   content: string;
   url: string;
 }) {
-  const [openAIResponse, setOpenAIResponse] = useState<string>("");
+  const [geminiResponse, setgeminiResponse] = useState<string>("");
 
   useEffect(() => {
     console.log("Component mounted. Content:", content);
-    if (description) {
-        setOpenAIResponse(description);
-    }
-    else if (content) {
-      console.log("Calling generateSummary...");
-      generateSummary(content, url, id);
+    // Check if there is a cached summary in local storage
+    const cachedSummary = localStorage.getItem(`summary_${id}`);
+    if (cachedSummary) {
+      setgeminiResponse(cachedSummary);
+    } else {
+      if (description) {
+        setgeminiResponse(description);
+      } else if (content) {
+        console.log("Calling generateSummary...");
+        generateSummary(content, url, id);
+      }
     }
   }, []);
 
   async function generateSummary(content: string, url: string, id: string) {
     console.log("generateSummary called. Content:", content);
-    
-    //   await fetch("http://localhost:3000/api/completion", {
-        await fetch("https://firepocket.vercel.app/api/completion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: content,
-          url: url,
-          id: id,
-        })
-      })
+    await fetch("http://localhost:3000/api/completion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: content,
+        url: url,
+        id: id,
+      }),
+    })
       .then(async (response: any) => {
         const reader = response.body?.getReader();
-        setOpenAIResponse("");
+        let responseData = '';
         while (true) {
           const { done, value } = await reader?.read();
-          if(done) {
+          if (done) {
             break;
           }
-          var currentChunk = new TextDecoder().decode(value);
-          setOpenAIResponse((prev) => prev + currentChunk);
+          const currentChunk = new TextDecoder().decode(value);
+          responseData += currentChunk;
+          setgeminiResponse((prev) => prev + currentChunk);
         }
+        // Cache the summary in local storage
+        localStorage.setItem(`summary_${id}`, responseData);
+      })
+      .catch((error) => {
+        console.error("Error generating summary:", error);
       });
-    }
+  }
 
   return (
     <div>
-      {openAIResponse !== "" && (
+      {geminiResponse !== "" && (
         <article className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden">
-          <ReactMarkdown>{openAIResponse}</ReactMarkdown>
+          <ReactMarkdown>{geminiResponse}</ReactMarkdown>
         </article>
       )}
     </div>
