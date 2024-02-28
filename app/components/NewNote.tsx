@@ -27,7 +27,7 @@ export default function NewNote({ userId }: { userId: string }) {
     event.preventDefault();
     // await fetch("https://firepocket.vercel.app/api/completion", {
 
-    const res = await fetch("https://firepocket.vercel.app/api/completion", {
+    const res = await fetch("https://firepocket.vercel.app/api/note", {
     // const res = await fetch("http://localhost:3000/api/note/", {
       method: "POST",
       headers: {
