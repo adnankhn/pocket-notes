@@ -66,5 +66,7 @@ export async function POST(request: Request) {
     },
   });
 
+  revalidatePath("/dasboard");
+
   return NextResponse.json({ jsonData: jsonData, noteId : newNote.id });
 }
