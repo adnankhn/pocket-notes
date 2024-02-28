@@ -15,7 +15,7 @@ import Link from "next/link";
 import prisma from "@/app/lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
-import { unstable_noStore as noStore } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 var { Readability } = require('@mozilla/readability');
 var { JSDOM } = require('jsdom'); 
 
@@ -84,6 +84,8 @@ export default async function NewNoteRoute() {
 
     // return redirect(`/dashboard/new/${newNote.id}`);
     // return redirect("/dashboard/");
+    revalidatePath("/dasboard");
+    return redirect(`/dashboard/new/${newNote.id}`);
     
   }
 

@@ -15,11 +15,22 @@ export async function Navbar() {
   return (
     <nav className="border-b bg-background h-[10vh] flex items-center">
       <div className="container flex items-center justify-between">
-        <Link href="/">
-          <h1 className="font-bold text-3xl">
-            Fire<span className="text-primary">Pocket</span>
-          </h1>
-        </Link>
+      {(await isAuthenticated()) ? (
+            <Link href="/dashboard">
+              <h1 className="font-bold text-3xl">
+                Fire<span className="text-primary">Pocket</span>
+              </h1>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-x-5">
+              <Link href="/">
+                <h1 className="font-bold text-3xl">
+                  Fire<span className="text-primary">Pocket</span>
+                </h1>
+              </Link>
+            </div>
+          )}
+          
 
         <div className="flex items-center gap-x-5">
           <ThemeToggle />
