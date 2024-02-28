@@ -16,6 +16,7 @@ import prisma from "@/app/lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
+import NewNote from "@/app/components/NewNote";
 var { Readability } = require('@mozilla/readability');
 var { JSDOM } = require('jsdom'); 
 
@@ -91,46 +92,47 @@ export default async function NewNoteRoute() {
 
   
   return (
-    <Card>
-      <form action={postData}>
-        <CardHeader>
-          <CardTitle>New Link</CardTitle>
-          <CardDescription>
-            Right here you can now create your new notes
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-y-5">
+    <NewNote userId={user?.id} />
+    // <Card>
+    //   <form action={postData}>
+    //     <CardHeader>
+    //       <CardTitle>New Link</CardTitle>
+    //       <CardDescription>
+    //         Right here you can now create your new notes
+    //       </CardDescription>
+    //     </CardHeader>
+    //     <CardContent className="flex flex-col gap-y-5">
 
-          <div className="gap-y-2 flex flex-col">
-            <Label>URL</Label>
-            <Input
-              type="url"
-              name="url"
-              placeholder="URL for your note"
-            />
-          </div>
-        </CardContent>
+    //       <div className="gap-y-2 flex flex-col">
+    //         <Label>URL</Label>
+    //         <Input
+    //           type="url"
+    //           name="url"
+    //           placeholder="URL for your note"
+    //         />
+    //       </div>
+    //     </CardContent>
 
-        <CardFooter className="flex justify-between">
-          <Button asChild variant="destructive">
-            <Link href="/dashboard">Cancel</Link>
-          </Button>
-          <SubmitButton />
-        </CardFooter>
-      </form>
+    //     <CardFooter className="flex justify-between">
+    //       <Button asChild variant="destructive">
+    //         <Link href="/dashboard">Cancel</Link>
+    //       </Button>
+    //       <SubmitButton />
+    //     </CardFooter>
+    //   </form>
 
-      {/* {jsonData && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Fetched Data</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Title: {jsonData["title"]}</p>
-            <p>Byline: {jsonData["byline"]}</p>
-            <div dangerouslySetInnerHTML={{ __html: jsonData["content"] }} /> 
-          </CardContent>
-        </Card>
-      )} */}
-    </Card>
+    //   {/* {jsonData && (
+    //     <Card>
+    //       <CardHeader>
+    //         <CardTitle>Fetched Data</CardTitle>
+    //       </CardHeader>
+    //       <CardContent>
+    //         <p>Title: {jsonData["title"]}</p>
+    //         <p>Byline: {jsonData["byline"]}</p>
+    //         <div dangerouslySetInnerHTML={{ __html: jsonData["content"] }} /> 
+    //       </CardContent>
+    //     </Card>
+    //   )} */}
+    // </Card>
   );
 }
