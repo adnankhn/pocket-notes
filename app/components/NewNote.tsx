@@ -76,7 +76,7 @@ export default function NewNote({ userId }: { userId: string }) {
                   />
                 </div>
               </TabsContent>
-              <TabsContent value="summary">
+              <TabsContent value="summary" forceMount={true}>
                 {/* {data?.jsonData && (
                   <article className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden">
                   <ReactMarkdown>{summary}</ReactMarkdown>
