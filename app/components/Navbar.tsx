@@ -16,7 +16,7 @@ export async function Navbar() {
     <nav className="border-b bg-background h-[10vh] flex items-center">
       <div className="container flex items-center justify-between">
       {(await isAuthenticated()) ? (
-            <Link href="/dashboard">
+            <Link href="/">
               <h1 className="font-bold text-3xl">
                 Fire<span className="text-primary">Pocket</span>
               </h1>
