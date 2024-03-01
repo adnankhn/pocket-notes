@@ -22,13 +22,14 @@ import SummaryComp from "./SummaryComp";
 export default function NewNote({ userId }: { userId: string }) {
   const [jsonData, setjsonData] = useState<string>("");
   const [url, setUrl] = useState<string>("");
+  const [tab, setActiveTab] = useState<string>("");
 
   async function createNote(event: FormEvent<HTMLFormElement>, url: string) {
     event.preventDefault();
     // await fetch("https://firepocket.vercel.app/api/completion", {
 
-    const res = await fetch("https://firepocket.vercel.app/api/note", {
-    // const res = await fetch("http://localhost:3000/api/note/", {
+    // const res = await fetch("https://firepocket.vercel.app/api/note", {
+    const res = await fetch("http://localhost:3000/api/note/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,8 +62,8 @@ export default function NewNote({ userId }: { userId: string }) {
           {jsonData && (
             <Tabs defaultValue="account">
               <TabsList>
-                <TabsTrigger value="account">Original</TabsTrigger>
-                <TabsTrigger value="summary">AI Summary</TabsTrigger>
+                <TabsTrigger value="account" onClick={() => setActiveTab('account')}>Original</TabsTrigger>
+                <TabsTrigger value="summary" onClick={() => setActiveTab('summary')}>AI Summary</TabsTrigger>
               </TabsList>
               <TabsContent value="account">
                 <div className="article-content">
@@ -76,7 +77,7 @@ export default function NewNote({ userId }: { userId: string }) {
                   />
                 </div>
               </TabsContent>
-              <TabsContent value="summary" forceMount={true}>
+              <TabsContent value="summary" forceMount hidden={tab !== "summary"}>
                 {/* {data?.jsonData && (
                   <article className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden">
                   <ReactMarkdown>{summary}</ReactMarkdown>
