@@ -1,11 +1,10 @@
 "use client";
 import { useState } from "react";
-
 import { SubmitButton } from "@/app/components/Submitbuttons";
 import { Button } from "@/components/ui/button";
 import { FormEvent } from "react";
+import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   Card,
   CardContent,
@@ -22,14 +21,15 @@ import SummaryComp from "./SummaryComp";
 export default function NewNote({ userId }: { userId: string }) {
   const [jsonData, setjsonData] = useState<string>("");
   const [url, setUrl] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [tab, setActiveTab] = useState<string>("");
 
   async function createNote(event: FormEvent<HTMLFormElement>, url: string) {
     event.preventDefault();
-    // await fetch("https://firepocket.vercel.app/api/completion", {
+    setLoading(true);
 
-    const res = await fetch("https://firepocket.vercel.app/api/note", {
-    // const res = await fetch("http://localhost:3000/api/note/", {
+    // const res = await fetch("https://firepocket.vercel.app/api/note", {
+    const res = await fetch("http://localhost:3000/api/note/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +42,7 @@ export default function NewNote({ userId }: { userId: string }) {
     const responsedata = await res.json();
     setjsonData(responsedata);
     setUrl(url);
-
+    setLoading(false);
   }
 
   return (
@@ -62,8 +62,18 @@ export default function NewNote({ userId }: { userId: string }) {
           {jsonData && (
             <Tabs defaultValue="account">
               <TabsList>
-                <TabsTrigger value="account" onClick={() => setActiveTab('account')}>Original</TabsTrigger>
-                <TabsTrigger value="summary" onClick={() => setActiveTab('summary')}>AI Summary</TabsTrigger>
+                <TabsTrigger
+                  value="account"
+                  onClick={() => setActiveTab("account")}
+                >
+                  Original
+                </TabsTrigger>
+                <TabsTrigger
+                  value="summary"
+                  onClick={() => setActiveTab("summary")}
+                >
+                  AI Summary
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="account">
                 <div className="article-content">
@@ -77,13 +87,11 @@ export default function NewNote({ userId }: { userId: string }) {
                   />
                 </div>
               </TabsContent>
-              <TabsContent value="summary" forceMount hidden={tab !== "summary"}>
-                {/* {data?.jsonData && (
-                  <article className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden">
-                  <ReactMarkdown>{summary}</ReactMarkdown>
-                 </article>
-              )} */}
-
+              <TabsContent
+                value="summary"
+                forceMount
+                hidden={tab !== "summary"}
+              >
                 <SummaryComp
                   description={jsonData.description}
                   id={jsonData.noteId}
@@ -107,7 +115,13 @@ export default function NewNote({ userId }: { userId: string }) {
             <Button asChild variant="destructive">
               <Link href="/dashboard">Cancel</Link>
             </Button>
-            <SubmitButton />
+            {loading ? (
+              <Button disabled className="w-fit">
+                <Loader2 className="mr-2 w-4 h-4 animate-spin" /> Please Wait
+              </Button>
+            ) : (
+              <SubmitButton />
+            )}
           </CardFooter>
         )}
       </form>
