@@ -5,8 +5,11 @@ import { CreditCard, Home, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "./UserNav";
+import { Progress } from "@/components/ui/progress"
+import { Label } from "@/components/ui/label"
 
-export function DashboardNav() {
+
+export function DashboardNav({ free_credits, subscription_status }: { free_credits: number, subscription_status:string }) {
   const pathname = usePathname();
   console.log(pathname);
   return (
@@ -24,6 +27,14 @@ export function DashboardNav() {
           </span>
         </Link>
       ))}
+      {subscription_status !== "active" && (
+        <div className="mt-4">
+          <Progress value={100 - (free_credits / 5) * 100} />
+          <Label htmlFor="picture" className="p-1 mt-1 text-xs">Free credits remaining: { free_credits } / 5 </Label>
+        </div>
+      )}
+
     </nav>
+
   );
 }

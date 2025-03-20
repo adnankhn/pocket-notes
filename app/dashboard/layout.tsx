@@ -57,6 +57,7 @@ async function getData({
   }
 }
 
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -75,12 +76,22 @@ export default async function DashboardLayout({
     profileImage: user.picture,
   });
 
+  const sub = await prisma.subscription.findUnique({
+    where: {
+      userId: user.id
+    },
+    select: {
+      free_credits:true,
+      status:true
+    },
+  });
+
   return (
     <div className="flex flex-col space-y-6 mt-10">
       {/* <div className="container mx-auto px-4 sm:px-2 flex flex-1 gap-12 md:grid md:grid-cols-[200px_1fr]"> */}
       <div className="container mx-auto px-4 sm:px-2 flex flex-1 gap-12 md:grid md:grid-cols-[200px_1fr]">
         <aside className="hidden w-[200px] flex-col md:flex">
-          <DashboardNav />
+          <DashboardNav free_credits={sub?.free_credits} subscription_status={sub?.status}/>
         </aside>
         <main>{children}</main>
       </div>
