@@ -15,11 +15,12 @@ interface DashboardContentProps {
     Notes: {
       title: string;
       id: string;
-      jsonData: any; 
+      jsonData: any;
       createdAt: Date;
     }[];
     Subscription: {
       status: string;
+      free_credits: number;
     } | null;
   } | null;
 }
@@ -38,8 +39,8 @@ export default function DashboardContent({ data }: DashboardContentProps) {
     setLoadingDelete((prevState) => ({ ...prevState, [noteId]: true }));
 
     // API to delete note
-    await fetch("https://firepocket.vercel.app/api/note/", {
-    // await fetch("http://localhost:3000/api/note/", {
+    // await fetch("https://firepocket.vercel.app/api/note", {
+    await fetch("http://localhost:3000/api/note/", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +88,8 @@ export default function DashboardContent({ data }: DashboardContentProps) {
           </p>
         </div>
 
-        {data?.Subscription?.status === "active" ? (
+        {data?.Subscription?.status === "active" ||
+         data?.Subscription?.free_credits > 0 ? (
           <Button asChild>
             <Link href="/dashboard/new">Save new URL</Link>
           </Button>
@@ -125,47 +127,45 @@ export default function DashboardContent({ data }: DashboardContentProps) {
               !deletedNoteIds.includes(item.id) && (
                 <Card
                   key={item.id}
-                  className="flex items-center justify-between p-4"
+                  className="rounded-lg border bg-card text-card-foreground shadow-sm relative"
                 >
-                  <div className="w-full relative">
+                  <div className="p-4">
                     <Link href={`/dashboard/new/${item.id}`}>
                       {item.jsonData && item.jsonData.thumbnail && (
                         <img
                           src={item.jsonData.thumbnail}
                           alt="Thumbnail"
-                          className="w-full rounded-t-lg aspect-video object-cover"
+                          className="w-full rounded-t-lg aspect-video object-cover mb-4"
                         />
                       )}
                     </Link>
 
-                    <div className="p-3">
-                      <Link href={`/dashboard/new/${item.id}`}>
-                        <h2 className="font-semibold text-xl text-primary">
-                          {item.title.length > 78
-                            ? `${item.title.substring(0, 78)}...`
-                            : item.title}
-                        </h2>
-                      </Link>
+                    <Link href={`/dashboard/new/${item.id}`}>
+                      <h2 className="font-semibold text-xl text-primary mb-2">
+                        {item.title.length > 78
+                          ? `${item.title.substring(0, 78)}...`
+                          : item.title}
+                      </h2>
+                    </Link>
 
-                      <p>
-                        {new Intl.DateTimeFormat("en-US", {
-                          dateStyle: "full",
-                        }).format(new Date(item.createdAt))}
-                      </p>
-                    </div>
+                    <p>
+                      {new Intl.DateTimeFormat("en-US", {
+                        dateStyle: "full",
+                      }).format(new Date(item.createdAt))}
+                    </p>
+                  </div>
 
-                    <div className="flex justify-end gap-x-4">
-                      {loadingDelete[item.id] ? (
-                        <Button variant={"destructive"} size="icon" disabled>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        </Button>
-                      ) : (
-                        <form onSubmit={(e) => deleteNote(e, item.id)}>
-                          <input type="hidden" name="noteId" value={item.id} />
-                          <TrashDelete />
-                        </form>
-                      )}
-                    </div>
+                  <div className="absolute bottom-4 right-4">
+                    {loadingDelete[item.id] ? (
+                      <Button variant={"destructive"} size="icon" disabled>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      </Button>
+                    ) : (
+                      <form onSubmit={(e) => deleteNote(e, item.id)}>
+                        <input type="hidden" name="noteId" value={item.id} />
+                        <TrashDelete />
+                      </form>
+                    )}
                   </div>
                 </Card>
               )

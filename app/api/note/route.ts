@@ -20,6 +20,30 @@ export async function DELETE(request: Request) {
 export async function POST(request: Request) {
   const { url, userId } = await request.json();
 
+  const userWithSubscription = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    include: {
+      Subscription: true,
+    },
+  });
+
+  if (
+    userWithSubscription.Subscription.free_credits > 0
+  ) {
+    await prisma.subscription.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        free_credits: {
+          decrement: 1,
+        },
+      },
+    });
+  }
+
   async function fetchDataFromUrl(url: string) {
     const response = await fetch(`${url}`, {
       headers: {

@@ -33,8 +33,8 @@ export default function SummaryComp({
 
   async function generateSummary(content: string, url: string, id: string) {
     console.log("generateSummary called. Content:", content);
-    await fetch("https://firepocket.vercel.app/api/completion", {
-    // await fetch("http://localhost:3000/api/completion", {
+    // await fetch("https://firepocket.vercel.app/api/completion", {
+    await fetch("http://localhost:3000/api/completion", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -12,11 +12,15 @@ export async function POST(request: Request) {
 
   // Ask Google Generative AI for a streaming completion given the prompt
   const response = await genAI
-    .getGenerativeModel({ model: 'gemini-pro'})
-    // .getGenerativeModel({ model: 'gemini-pro' , generationConfig: { maxOutputTokens: 200 }})
+    // .getGenerativeModel({ model: 'gemini-2.0-flash-001, gemini-1.5-flash-002,'})
+    .getGenerativeModel({ model: 'gemini-1.5-flash-002' , generationConfig: { maxOutputTokens: 1000 }})
     .generateContentStream({
-      contents: [{ role: 'user', parts: [{ text: "write a short summary of this article explaining the key takeaways and return the output in a well formated markdown format "+prompt }] }],
+      contents: [{ role: 'user', parts: [{ text: "give a short summary in under 150 words or less in few points of this article explaining the key takeaways  and return the output in a well formated markdown format and dont include anything else in output :"+prompt }] }],
     });
+
+    // .generateContentStream({
+    //   contents: [{ role: 'user', parts: [{ text: "tldr the output in markdown format and keep it short  :"+prompt }] }],
+    // });
 
   // Convert the response into a friendly text-stream
   // const stream = GoogleGenerativeAIStream(response);
@@ -26,8 +30,8 @@ export async function POST(request: Request) {
       // This callback is called when the completion is ready
       // You can use this to save the final completion to your database
 
-      await fetch("https://firepocket.vercel.app/api/save-db", {
-      // const res = await fetch("http://localhost:3000/api/save-db", {
+      // await fetch("https://firepocket.vercel.app/api/save-db", {
+     await fetch("http://localhost:3000/api/save-db", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
