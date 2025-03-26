@@ -158,7 +158,7 @@ export default function DashboardContent({ initialData, userId }: DashboardConte
       {/* Search input */}
       <Input
         type="text"
-        placeholder="Search notes..."
+        placeholder="Search bookmarks..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className="focus-visible:ring-transparent"
