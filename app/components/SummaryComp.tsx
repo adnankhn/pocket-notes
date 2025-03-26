@@ -1,6 +1,7 @@
 "use client";
 import ReactMarkdown from "react-markdown";
 import { useState, useEffect } from "react";
+import { saveSummary } from "@/app/actions"; // Import saveSummary
 
 export default function SummaryComp({
   description,
@@ -59,6 +60,8 @@ export default function SummaryComp({
         }
         // Cache the summary in local storage
         localStorage.setItem(`summary_${id}`, responseData);
+        // Save the summary to the database
+        saveSummary({ noteId: id, summary: responseData }); // Call server action
       })
       .catch((error) => {
         console.error("Error generating summary:", error);

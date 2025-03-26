@@ -41,6 +41,26 @@ export async function loadMoreNotes({ skip, userId }: { skip: number; userId: st
 
 
 // Keep the existing refreshDashboard function if still needed elsewhere
+export async function saveSummary({ noteId, summary }: { noteId: string; summary: string }) {
+  "use server";
+
+  try {
+    await prisma.note.update({
+      where: {
+        id: noteId,
+      },
+      data: {
+        summary: summary,
+      },
+    });
+    revalidatePath(`/dashboard/new/${noteId}`); // Revalidate the note detail page
+  } catch (error) {
+    console.error("Error saving summary:", error);
+    // Handle error appropriately (e.g., throw, return an error object)
+  }
+}
+
+// Keep the existing refreshDashboard function if still needed elsewhere
 export async function refreshDashboard() { // Added async keyword
     revalidatePath("/dashboard");
 }
