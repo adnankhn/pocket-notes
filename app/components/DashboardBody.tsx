@@ -18,9 +18,10 @@ interface DashboardContentProps {
       jsonData: any;
       createdAt: Date;
     }[];
+    free_credits: number; // Moved free_credits here
     Subscription: {
       status: string;
-      free_credits: number;
+      // Removed free_credits from here
     } | null;
   } | null;
 }
@@ -39,8 +40,8 @@ export default function DashboardContent({ data }: DashboardContentProps) {
     setLoadingDelete((prevState) => ({ ...prevState, [noteId]: true }));
 
     // API to delete note
-    // await fetch("https://firepocket.vercel.app/api/note", {
-    await fetch("http://localhost:3000/api/note/", {
+    await fetch("https://firepocket.vercel.app/api/note", {
+    // await fetch("http://localhost:3000/api/note/", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -88,8 +89,9 @@ export default function DashboardContent({ data }: DashboardContentProps) {
           </p>
         </div>
 
+        {/* Check for active subscription OR free credits directly on user data */}
         {data?.Subscription?.status === "active" ||
-         data?.Subscription?.free_credits > 0 ? (
+         data?.free_credits > 0 ? ( 
           <Button asChild>
             <Link href="/dashboard/new">Save new URL</Link>
           </Button>

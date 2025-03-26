@@ -17,6 +17,7 @@ async function getData(userId: string) {
       id: userId,
     },
     select: {
+      free_credits: true, // Select free_credits from User
       Notes: {
         select: {
           title: true,

@@ -20,21 +20,39 @@ export async function DELETE(request: Request) {
 export async function POST(request: Request) {
   const { url, userId } = await request.json();
 
-  const userWithSubscription = await prisma.user.findUnique({
+  // Fetch user credits and subscription status
+  const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
-    include: {
-      Subscription: true,
+    select: {
+      id: true,
+      free_credits: true,
+      Subscription: {
+        select: {
+          status: true,
+        },
+      },
     },
   });
 
-  if (
-    userWithSubscription.Subscription.free_credits > 0
-  ) {
-    await prisma.subscription.update({
+  if (!user) {
+    return new NextResponse("User not found", { status: 404 });
+  }
+
+  const hasActiveSubscription = user.Subscription?.status === "active";
+  const hasFreeCredits = user.free_credits > 0;
+
+  // Check if user has credits or an active subscription
+  if (!hasActiveSubscription && !hasFreeCredits) {
+    return new NextResponse("Insufficient credits or inactive subscription", { status: 402 }); // Payment Required
+  }
+
+  // Decrement free credits if available
+  if (hasFreeCredits) {
+    await prisma.user.update({
       where: {
-        userId: userId,
+        id: userId,
       },
       data: {
         free_credits: {
@@ -43,6 +61,7 @@ export async function POST(request: Request) {
       },
     });
   }
+  // If no free credits but active subscription, proceed without decrementing
 
   async function fetchDataFromUrl(url: string) {
     const response = await fetch(`${url}`, {
