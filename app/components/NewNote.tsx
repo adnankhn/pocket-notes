@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import SummaryComp from "./SummaryComp";
-import refreshDashboard from "../actions";
+import { refreshDashboard } from "../actions"; // Use named import
 
 export default function NewNote({ userId }: { userId: string }) {
   const [jsonData, setjsonData] = useState<string>("");

@@ -8,8 +8,9 @@ import { Card } from "@/components/ui/card";
 import { TrashDelete } from "../components/Submitbuttons";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import DashboardContent from "../components/DashboardBody";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
+
+const NOTES_PER_PAGE = 9; // Define batch size
+
 async function getData(userId: string) {
   noStore();
   const data = await prisma.user.findUnique({
@@ -29,6 +30,7 @@ async function getData(userId: string) {
         orderBy: {
           createdAt: "desc",
         },
+        take: NOTES_PER_PAGE, // Fetch only the first batch
       },
 
       Subscription: {
@@ -110,8 +112,12 @@ export default async function DashboardPage() {
 
     revalidatePath("/dasboard");
   }
+  // Pass initial notes and user ID separately to the client component
   return (
-    <DashboardContent data={data}/>
+    <DashboardContent 
+      initialData={data} 
+      userId={user?.id as string} 
+    />
   //   <div className="grid items-start gap-y-8">
   //     <div className="flex items-center justify-between px-2">
   //       <div className="grid gap-1">
