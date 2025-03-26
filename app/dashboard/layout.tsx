@@ -37,7 +37,7 @@ async function getData({
     },
   });
 
-  if (!user) {
+  if (!user && email && firstName && lastName) {
     // If user doesn't exist, create them (default credits are applied by Prisma)
     const name = `${firstName ?? ""} ${lastName ?? ""}`;
     await prisma.user.create({
