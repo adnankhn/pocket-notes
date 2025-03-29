@@ -31,7 +31,7 @@ interface DashboardContentProps {
   userId: string; // Added userId prop
 }
 
-const NOTES_PER_PAGE = 12; // Same batch size as in page.tsx
+const NOTES_PER_PAGE = 9; // Align batch size with page.tsx
 
 export default function DashboardContent({ initialData, userId }: DashboardContentProps) {
   const [notes, setNotes] = useState<Note[]>(initialData?.Notes ?? []);
