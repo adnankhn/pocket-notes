@@ -2,13 +2,12 @@
 import React, { useState, useEffect, FormEvent } from "react"; // Added useEffect
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { File, Loader2 } from "lucide-react"; // Added Loader2
+import { File, Loader2, Plus } from "lucide-react"; // Added Loader2
 import { Card } from "@/components/ui/card";
 import { TrashDelete } from "../components/Submitbuttons";
 import { Input } from "@/components/ui/input";
 import { loadMoreNotes } from "../actions"; // Import server action (will create later)
 import { useInView } from "react-intersection-observer"; // Import hook
-
 // Define the type for a single Note based on what's fetched
 type Note = {
   title: string;
@@ -142,18 +141,42 @@ export default function DashboardContent({ initialData, userId }: DashboardConte
           </p>
         </div>
 
-        {/* Use userInfo derived from initialData */}
+        {/* Desktop button */}
         {userInfo.Subscription?.status === "active" ||
-         userInfo.free_credits > 0 ? ( 
-          <Button asChild>
+         userInfo.free_credits > 0 ? (
+          <Button asChild className="hidden md:flex">
             <Link href="/dashboard/new">Save new URL</Link>
           </Button>
         ) : (
-          <Button asChild>
+          <Button asChild className="hidden md:flex">
             <Link href="/dashboard/billing">Create a new Note</Link>
           </Button>
         )}
       </div>
+
+      {/* Mobile FAB - Fixed Position */}
+      {userInfo.Subscription?.status === "active" ||
+       userInfo.free_credits > 0 ? (
+        <Button 
+          asChild 
+          size="icon" 
+          className="md:hidden fixed bottom-6 right-6 rounded-full shadow-lg z-50 h-14 w-14"
+        >
+          <Link href="/dashboard/new">
+            <Plus className="h-6 w-6" />
+          </Link>
+        </Button>
+      ) : (
+        <Button 
+          asChild 
+          size="icon" 
+          className="md:hidden fixed bottom-6 right-6 rounded-full shadow-lg z-50 h-14 w-14"
+        >
+          <Link href="/dashboard/billing">
+            <Plus className="h-6 w-6" />
+          </Link>
+        </Button>
+      )}
 
       {/* Search input */}
       <Input

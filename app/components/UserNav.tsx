@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./Themetoggle";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,7 +70,10 @@ export function UserNav({
           ))}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-
+        <DropdownMenuItem className="focus:bg-transparent" asChild>
+          <ThemeToggle />
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           className="w-full flex justify-between items-center"
           asChild

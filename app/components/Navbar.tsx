@@ -32,7 +32,7 @@ export async function Navbar() {
         )}
 
         <div className="flex items-center gap-x-2 md:gap-x-5">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
 
           {(await isAuthenticated()) ? (
             <UserNav
