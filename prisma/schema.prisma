@@ -43,6 +43,7 @@ model Note {
   url         String?
   jsonData    Json?
   summary     String? @db.VarChar(10000)
+  is_published Boolean? // Added field for community publishing
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

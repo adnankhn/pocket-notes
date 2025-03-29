@@ -8,11 +8,13 @@ export default function SummaryComp({
   id,
   content,
   url,
+  summary,
 }: {
-  description: string;
+  description: string | null; // Allow null
   id: string;
-  content: string;
-  url: string;
+  content: string | null; // Allow null
+  url: string; // Allow null
+  summary: string | null; // Allow null
 }) {
   const [geminiResponse, setgeminiResponse] = useState<string>("");
 
@@ -23,8 +25,9 @@ export default function SummaryComp({
     if (cachedSummary) {
       setgeminiResponse(cachedSummary);
     } else {
-      if (description) {
-        setgeminiResponse(description);
+      // Use description if available and not null/empty
+      if (summary) {
+        setgeminiResponse(summary);
       } else if (content) {
         console.log("Calling generateSummary...");
         generateSummary(content, url, id);
@@ -34,8 +37,9 @@ export default function SummaryComp({
 
   async function generateSummary(content: string, url: string, id: string) {
     console.log("generateSummary called. Content:", content);
-    await fetch("https://firepocket.vercel.app/api/completion", {
-    // await fetch("http://localhost:3000/api/completion", {
+    // await fetch("https://firepocket.vercel.app/api/completion", {
+
+    await fetch("http://localhost:3000/api/completion", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

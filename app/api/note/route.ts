@@ -17,6 +17,44 @@ export async function DELETE(request: Request) {
   return new Response(null, { status: 200 });
 }
 
+export async function PATCH(request: Request) {
+  // TODO: Add authentication/authorization check here if needed
+  // const { getUser } = getKindeServerSession();
+  // const user = await getUser();
+  // if (!user) {
+  //   return new NextResponse("Unauthorized", { status: 401 });
+  // }
+
+  const { noteId, is_published } = await request.json();
+
+  if (!noteId || typeof is_published !== 'boolean') {
+    return new NextResponse("Missing noteId or is_published flag", { status: 400 });
+  }
+
+  try {
+    const updatedNote = await prisma.note.update({
+      where: {
+        id: noteId,
+        // Optional: Add userId check to ensure user owns the note
+        // userId: user.id,
+      },
+      data: {
+        is_published: is_published,
+      },
+    });
+
+    // Optional: Revalidate relevant paths if needed
+    // revalidatePath(`/dashboard/new/${noteId}`);
+    // revalidatePath('/community'); // If there's a community page
+
+    return NextResponse.json(updatedNote);
+  } catch (error) {
+    console.error("Failed to update note:", error);
+    // Handle potential errors, e.g., note not found
+    return new NextResponse("Failed to update note", { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   const { url, userId } = await request.json();
 
