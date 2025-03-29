@@ -28,21 +28,9 @@ import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 
 // Removed SummaryComp import, now used in client component
 import NoteDetailClient from "@/app/components/NoteDetailClient"; // Import the new client component
+import { NoteData } from "@/app/lib/types"; // Import shared NoteData type
 
-// Define a type for the note data - can be moved to a shared types file later
-type NoteData = {
-  id: string;
-  title: string | null;
-  description: string | null;
-  jsonData: {
-    title?: string | null;
-    byline?: string | null;
-    content?: string | null;
-    // Add other expected properties from jsonData if necessary
-  } | null | any; // Using 'any' for flexibility if structure varies, refine if possible
-  url: string | null;
-  is_published: boolean | null;
-} | null; // Allow data itself to be null if not found
+// Removed local NoteData definition
 
 
 // Removed unused safetySettings constant
@@ -65,7 +53,8 @@ async function getData({ userId, noteId }: { userId: string; noteId: string }): 
       id: true,
       jsonData: true,
       url: true,
-      is_published: true, // Fetch the published status
+      is_published: true,
+      userId: true, // Select the note owner's ID
     },
   });
 
@@ -101,8 +90,12 @@ export default async function DynamicRoute({
   // Removed unused postData function
   // async function postData(formData: FormData) { ... }
 
-  // Render the client component, passing the fetched data
+  // Render the client component, passing the fetched data and user IDs
   return (
-    <NoteDetailClient initialData={data} />
+    <NoteDetailClient
+      initialData={data}
+      noteUserId={data?.userId ?? null} // Pass note owner's ID
+      currentUserId={user.id} // Pass current logged-in user's ID
+    />
   );
 }

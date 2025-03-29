@@ -13,7 +13,7 @@ export default function SummaryComp({
   description: string | null; // Allow null
   id: string;
   content: string | null; // Allow null
-  url: string; // Allow null
+  url: string | null; // Allow null
   summary: string | null; // Allow null
 }) {
   const [geminiResponse, setgeminiResponse] = useState<string>("");
@@ -35,11 +35,11 @@ export default function SummaryComp({
     }
   }, []);
 
-  async function generateSummary(content: string, url: string, id: string) {
+  async function generateSummary(content: string, url: string | null, id: string) {
     console.log("generateSummary called. Content:", content);
-    // await fetch("https://firepocket.vercel.app/api/completion", {
+    await fetch("https://firepocket.vercel.app/api/completion", {
 
-    await fetch("http://localhost:3000/api/completion", {
+    // await fetch("http://localhost:3000/api/completion", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

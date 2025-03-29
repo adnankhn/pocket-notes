@@ -64,3 +64,32 @@ export async function saveSummary({ noteId, summary }: { noteId: string; summary
 export async function refreshDashboard() { // Added async keyword
     revalidatePath("/dashboard");
 }
+
+export async function loadCommunityNotes({ skip, take }: { skip: number; take: number }) {
+  "use server";
+
+  try {
+    const notes = await prisma.note.findMany({
+      where: {
+        is_published: true, // Fetch only published notes
+      },
+      select: {
+        title: true,
+        id: true,
+        jsonData: true, // For thumbnail
+        createdAt: true,
+        // Optionally select user info if needed (e.g., user name)
+        // User: { select: { name: true } }
+      },
+      orderBy: {
+        updatedAt: "desc", // Default sort by latest
+      },
+      skip: skip,
+      take: take,
+    });
+    return notes;
+  } catch (error) {
+    console.error("Error fetching community notes:", error);
+    return null; // Return null or empty array on error
+  }
+}

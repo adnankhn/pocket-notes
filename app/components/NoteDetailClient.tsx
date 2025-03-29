@@ -16,37 +16,30 @@ import { toast } from "sonner";
 import { Share2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import SummaryComp from "@/app/components/SummaryComp";
+import { NoteData } from "@/app/lib/types"; // Import shared type
 
-// Re-define NoteData type here or import from a shared types file
-type NoteData = {
-  id: string;
-  title: string | null;
-  description: string | null;
-  summary: string | null;
-  jsonData: {
-    title?: string | null;
-    byline?: string | null;
-    content?: string | null;
-  } | null | any;
-  url: string | null;
-  is_published: boolean | null;
-} | null;
+// Removed local NoteData definition
 
 interface NoteDetailClientProps {
   initialData: NoteData;
-  // Add userId if needed for authorization checks within client component, though API should handle this
+  noteUserId: string | null; // ID of the note's owner
+  currentUserId: string; // ID of the currently logged-in user
 }
 
-export default function NoteDetailClient({ initialData }: NoteDetailClientProps) {
+export default function NoteDetailClient({ initialData, noteUserId, currentUserId }: NoteDetailClientProps) {
   // Use initialData passed from the server component
   const [data, setData] = useState(initialData); // Keep local state if needed for updates
   const [isPublishing, setIsPublishing] = useState(false);
   // Initialize isPublished state based on the initial data prop
   const [isPublished, setIsPublished] = useState(initialData?.is_published ?? false);
 
+  // Determine if the current user owns the note
+  const isOwner = noteUserId === currentUserId;
+
   // Handle publish button click
   const handlePublish = async () => {
-    if (!data?.id || isPublished) return;
+    // Only owners can publish
+    if (!isOwner || !data?.id || isPublished) return;
 
     setIsPublishing(true);
     try {
@@ -89,15 +82,18 @@ export default function NoteDetailClient({ initialData }: NoteDetailClientProps)
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>View Article</CardTitle>
-        <Button
-          onClick={handlePublish}
-          disabled={isPublishing || isPublished}
-          size="icon"
-          variant={isPublished ? "ghost" : "outline"}
-          title={isPublished ? "Already published" : "Publish to community"}
-        >
-          <Share2 className={`h-4 w-4 ${isPublished ? 'text-green-500' : ''}`} />
-        </Button>
+        {/* Only show Share button if the user is the owner */}
+        {isOwner && (
+          <Button
+            onClick={handlePublish}
+            disabled={isPublishing || isPublished}
+            size="icon"
+            variant={isPublished ? "ghost" : "outline"}
+            title={isPublished ? "Already published" : "Publish to community"}
+          >
+            <Share2 className={`h-4 w-4 ${isPublished ? 'text-green-500' : ''}`} />
+          </Button>
+        )}
       </CardHeader>
       <CardContent className="flex flex-col gap-y-5">
         <div className="gap-y-2 flex flex-col">
@@ -108,7 +104,7 @@ export default function NoteDetailClient({ initialData }: NoteDetailClientProps)
             name="title"
             placeholder="Title for your note"
             defaultValue={data.title ?? ""}
-            readOnly // Assuming title is read-only in this view
+            readOnly={!isOwner} // Title is read-only if not the owner
           />
         </div>
 
@@ -124,35 +120,40 @@ export default function NoteDetailClient({ initialData }: NoteDetailClientProps)
           </div>
         </div>
 
-        <Tabs defaultValue="account">
+        {/* Default tab depends on ownership */}
+        <Tabs defaultValue={isOwner ? "account" : "summary"}>
           <TabsList>
-            <TabsTrigger value="account">Original</TabsTrigger>
+            {/* Only show Original tab trigger if owner */}
+            {isOwner && <TabsTrigger value="account">Original</TabsTrigger>}
             <TabsTrigger value="summary">AI Summary</TabsTrigger>
           </TabsList>
-          <TabsContent value="account">
-            {data.jsonData ? (
-              <div className="article-content">
-                <h1>Title: {data.jsonData.title ?? 'N/A'}</h1>
-                <p>Byline: {data.jsonData.byline ?? 'N/A'}</p>
-                {data.jsonData.content ? (
-                  <div
-                    className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden"
-                    dangerouslySetInnerHTML={{ __html: data.jsonData.content }}
-                  />
-                ) : (
-                  <p>No content available.</p>
-                )}
-              </div>
-            ) : (
-              <p>Original content not available.</p>
-            )}
-          </TabsContent>
+          {/* Only show Original tab content if owner */}
+          {isOwner && (
+            <TabsContent value="account">
+              {data.jsonData ? (
+                <div className="article-content">
+                  <h1>Title: {data.jsonData.title ?? 'N/A'}</h1>
+                  <p>Byline: {data.jsonData.byline ?? 'N/A'}</p>
+                  {data.jsonData.content ? (
+                    <div
+                      className="prose lg:prose-base dark:prose-invert max-w-[800px] mx-auto prose-hr:hidden"
+                      dangerouslySetInnerHTML={{ __html: data.jsonData.content }}
+                    />
+                  ) : (
+                    <p>No content available.</p>
+                  )}
+                </div>
+              ) : (
+                <p>Original content not available.</p>
+              )}
+            </TabsContent>
+          )}
           <TabsContent value="summary">
             <SummaryComp
               description={data.description ?? null}
               summary={data.jsonData?.summary ?? null}
               id={data.id}
-              content={data.jsonData?.content ?? null}
+              content={data.jsonData?.content ?? ""} // Pass empty string if null
               url={data.url ?? null}
             />
           </TabsContent>
@@ -161,9 +162,10 @@ export default function NoteDetailClient({ initialData }: NoteDetailClientProps)
 
       <CardFooter className="flex justify-between">
         <Button asChild variant="secondary">
+          {/* Link back to dashboard or community depending on context? For now, just dashboard */}
           <Link href="/dashboard">Back</Link>
         </Button>
-        {/* Submit button for editing might be needed here if title/desc were editable */}
+        {/* Submit button for editing might be needed here if title/desc were editable and isOwner */}
       </CardFooter>
     </Card>
   );

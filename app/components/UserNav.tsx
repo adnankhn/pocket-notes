@@ -9,13 +9,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CreditCard, DoorClosed, Home, Settings } from "lucide-react";
+// Import Users icon
+import { CreditCard, DoorClosed, Home, Settings, Users } from "lucide-react";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 import Link from "next/link";
 
 export const navItems = [
   { name: "Home", href: "/dashboard", icon: Home },
+  // Add Community link
+  { name: "Community", href: "/dashboard/community", icon: Users },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
   { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
 ];
