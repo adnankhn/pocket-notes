@@ -215,48 +215,56 @@ export default function DashboardContent({ initialData, userId }: DashboardConte
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-7">
           {filteredNotes.map((item: Note) => ( // Added type for item
               <Card
-                key={item.id}
-                className="rounded-lg border bg-card text-card-foreground shadow-sm relative"
-              >
-                <div className="p-4">
-                  <Link href={`/dashboard/new/${item.id}`}>
-                    {item.jsonData && item.jsonData.thumbnail && (
+              key={item.id}
+              className="rounded-lg border bg-card text-card-foreground shadow-sm"
+            >
+              <div className="p-4 flex flex-col h-full">
+                {/* Thumbnail Container */}
+                <Link href={`/dashboard/new/${item.id}`}>
+                  {item.jsonData && item.jsonData.thumbnail && (
+                    <div className="relative w-full pt-[56.25%] mb-4">
                       <img
                         src={item.jsonData.thumbnail}
                         alt="Thumbnail"
-                        className="w-full rounded-t-lg aspect-video object-cover mb-4"
+                        className="absolute top-0 left-0 w-full h-full rounded-t-lg object-cover"
                       />
-                    )}
-                  </Link>
-
-                  <Link href={`/dashboard/new/${item.id}`}>
-                    <h2 className="font-semibold text-xl text-primary mb-2">
-                      {item.title.length > 78
-                        ? `${item.title.substring(0, 78)}...`
-                        : item.title}
-                    </h2>
-                  </Link>
-
-                  <p>
-                    {new Intl.DateTimeFormat("en-US", {
-                      dateStyle: "full",
-                    }).format(new Date(item.createdAt))}
-                  </p>
-                </div>
-
-                <div className="absolute bottom-4 right-4">
-                  {loadingDelete[item.id] ? (
-                    <Button variant={"destructive"} size="icon" disabled>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    </Button>
-                  ) : (
-                    <form onSubmit={(e) => deleteNote(e, item.id)}>
-                      <input type="hidden" name="noteId" value={item.id} />
-                      <TrashDelete />
-                    </form>
+                    </div>
                   )}
+                </Link>
+            
+                {/* Content Container */}
+                <div className="flex flex-col flex-grow">
+                  {/* Title and Date */}
+                  <div className="flex-grow">
+                    <Link href={`/dashboard/new/${item.id}`}>
+                      <h2 className="font-semibold text-xl text-primary mb-2 line-clamp-2">
+                        {item.title}
+                      </h2>
+                    </Link>
+            
+                    <p className="text-sm text-muted-foreground">
+                      {new Intl.DateTimeFormat("en-US", {
+                        dateStyle: "full",
+                      }).format(new Date(item.createdAt))}
+                    </p>
+                  </div>
+            
+                  {/* Delete Button */}
+                  <div className="mt-4 flex justify-end">
+                    {loadingDelete[item.id] ? (
+                      <Button variant={"destructive"} size="icon" disabled>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      </Button>
+                    ) : (
+                      <form onSubmit={(e) => deleteNote(e, item.id)}>
+                        <input type="hidden" name="noteId" value={item.id} />
+                        <TrashDelete />
+                      </form>
+                    )}
+                  </div>
                 </div>
-              </Card>
+              </div>
+            </Card>
             )
           )}
         </div>
